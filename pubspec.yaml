@@ -30,6 +30,7 @@ dependencies:
     just_audio: ^0.7.01
     provider: ^5.0.0
     rxdart: ^0.26.0
+    shared_preferences: ^2.0.4
 
 dev_dependencies:
     flutter_test:

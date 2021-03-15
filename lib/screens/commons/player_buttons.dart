@@ -27,7 +27,7 @@ class PlayerButtons extends StatelessWidget {
                 }),
         StreamBuilder<SequenceState?>(
           stream: _audioPlayer.sequenceStateStream,
-          builder: (_, __) {
+          builder: (context, snapshot) {
             return _previousButton();
           },
         ),
@@ -41,7 +41,7 @@ class PlayerButtons extends StatelessWidget {
         ),
         StreamBuilder<SequenceState?>(
           stream: _audioPlayer.sequenceStateStream,
-          builder: (_, __) {
+          builder: (context, snapshot) {
             return _nextButton();
           },
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'commons/player_buttons.dart';
 //import 'helpers/meta.dart';
 import 'helpers/data_provider.dart';
@@ -53,10 +54,23 @@ class _BookPlayerState extends State<BookPlayer> {
       appBar: AppBar(
         title: Text('AudioBooks'),
         actions: [
+          TextButton(
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                final myStr = prefs.getStringList('positionIndex') ?? [];
+                print('One: ${myStr[0]}-- Two: ${myStr[1]}');
+              },
+              child: Text('Get')),
           TextButton.icon(
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.black)),
-              onPressed: () {},
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setStringList('positionIndex', [
+                  _audioPlayer.position.toString(),
+                  _audioPlayer.currentIndex.toString()
+                ]);
+              },
               icon: Icon(Icons.book),
               label: Text('ChangeBook'))
         ],
@@ -88,7 +102,8 @@ class _BookPlayerState extends State<BookPlayer> {
                                 ),
                                 Text(book.sequence[0].tag.album,
                                     style: TextStyle(fontSize: 20)),
-                                Text(book.sequence[book.currentIndex].tag.title)
+                                Text(
+                                    '${book.sequence[book.currentIndex].tag.title}--${book.currentIndex}')
                               ])
                             : Text('');
                       }),
@@ -123,8 +138,9 @@ class _BookPlayerState extends State<BookPlayer> {
                                   trailing: IconButton(
                                     onPressed: () async {
                                       await _audioPlayer.stop();
-                                      _audioPlayer
-                                          .setAudioSource(_playList[index]);
+                                      _audioPlayer.seek(Duration(seconds: 0),
+                                          index: index);
+
                                       setState(() {});
                                     },
                                     icon: Icon(Icons.play_arrow),
@@ -143,7 +159,12 @@ class _BookPlayerState extends State<BookPlayer> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey[600],
-        onPressed: () {
+        onPressed: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setStringList('positionIndex', [
+            _audioPlayer.position.toString(),
+            _audioPlayer.currentIndex.toString()
+          ]);
           dispose();
           SystemChannels.platform.invokeMethod('SystemNavigator.pop');
         },

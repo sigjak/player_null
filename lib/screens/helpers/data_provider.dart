@@ -44,8 +44,8 @@ class DataProvider with ChangeNotifier {
         logo: 'assets/images/bylgjan.png'),
   ];
 
-  List<String> audioFiles = [];
-  List<AudioSource> workList = [];
+  //List<String> audioFiles = [];
+  //List<AudioSource> workList = [];
 
   Future<void> getAssetFiles() async {
     final manifestContent = await rootBundle.loadString('AssetManifest.json');
@@ -63,20 +63,6 @@ class DataProvider with ChangeNotifier {
     namesOfBooks = infoMap['namesOfBooks'];
     figFile = infoMap['artwork'];
     prepPlaylist();
-    // mp3Files.forEach((element) {
-    //   if (element.contains(namesOfBooks[0])) {
-    //     String temp = element.substring(0, element.length - 4);
-    //     temp = temp.substring(18);
-
-    //     playlist.add(
-    //       AudioSource.uri(
-    //         Uri.parse("asset:///$element"),
-    //         tag: AudioMetadata(
-    //             album: namesOfBooks[0], title: temp, artwork: figFile[0]),
-    //       ),
-    //     );
-    //   }
-    // });
   }
 
   prepPlaylist() {
@@ -95,7 +81,7 @@ class DataProvider with ChangeNotifier {
           );
         }
       });
-      print(playlist);
+      print(playlist[0].sequence[0].tag.title);
       playLists.add(playlist);
     }
   }

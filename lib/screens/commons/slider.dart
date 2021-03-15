@@ -52,7 +52,18 @@ class _SliderBarState extends State<SliderBar> {
                       Positioned(
                           top: 35,
                           right: 0,
-                          child: Text(duration.toString().split(".").first))
+                          child: Text(duration.toString().split(".").first)),
+                      Row(
+                        children: [
+                          ElevatedButton(
+                              onPressed: () {
+                                print(position.toString());
+                                print(widget._audioPlayer.currentIndex);
+                                print(widget._audioPlayer.position);
+                              },
+                              child: Text('Pos'))
+                        ],
+                      )
                     ],
                   ),
                 );
