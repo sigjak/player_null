@@ -1,0 +1,25 @@
+import './screens/select.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import './screens/helpers/data_provider.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => DataProvider(),
+      child: MaterialApp(
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.grey[500],
+        ),
+        home: Selecting(),
+      ),
+    );
+  }
+}

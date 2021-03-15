@@ -1,0 +1,11 @@
+{
+    "numberOfBooks": 2,
+    "namesOfBooks": [
+        "TheGuardians",
+        "The Silent Patient"
+    ],
+    "artwork": [
+        "assets/audiobooks/the guardians.jpg",
+        "assets/audiobooks/silent_patient.jpg"
+    ]
+}
