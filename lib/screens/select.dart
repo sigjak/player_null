@@ -2,7 +2,7 @@ import 'package:audioplayer_null/screens/audiobookPlayer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'radio_player.dart';
-import './helpers/data_provider.dart';
+import '../helpers/data_provider.dart';
 
 class Selecting extends StatefulWidget {
   @override

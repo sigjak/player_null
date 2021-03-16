@@ -33,6 +33,8 @@ class _SliderBarState extends State<SliderBar> {
                         children: [
                           Expanded(
                             child: Slider(
+                              activeColor: Colors.grey[700],
+                              inactiveColor: Colors.grey[300],
                               min: 0.0,
                               max: duration.inMilliseconds.toDouble(),
                               value: position.inMilliseconds.toDouble(),
@@ -53,25 +55,10 @@ class _SliderBarState extends State<SliderBar> {
                           top: 35,
                           right: 0,
                           child: Text(duration.toString().split(".").first)),
-                      Row(
-                        children: [
-                          ElevatedButton(
-                              onPressed: () {
-                                print(position.toString());
-                                print(widget._audioPlayer.currentIndex);
-                                print(widget._audioPlayer.position);
-                              },
-                              child: Text('Pos'))
-                        ],
-                      )
                     ],
                   ),
                 );
               });
         });
   }
-
-  // Widget seekBar(context, position) {
-  //   return Text(position.toString());
-  // }
 }

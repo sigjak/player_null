@@ -1,7 +1,7 @@
 import './screens/select.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './screens/helpers/data_provider.dart';
+import './helpers/data_provider.dart';
 
 void main() {
   runApp(MyApp());

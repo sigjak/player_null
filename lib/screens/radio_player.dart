@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'commons/player_buttons.dart';
-import 'helpers/meta.dart';
-import 'helpers/data_provider.dart';
-//import './commons/slider.dart';
+import '../commons/player_buttons.dart';
+import '../models/meta.dart';
+import '../helpers/data_provider.dart';
 
 class Player extends StatefulWidget {
   // final int index;

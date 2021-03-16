@@ -4,10 +4,10 @@ import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'commons/player_buttons.dart';
+import '../commons/player_buttons.dart';
 //import 'helpers/meta.dart';
-import 'helpers/data_provider.dart';
-import './commons/slider.dart';
+import '../helpers/data_provider.dart';
+import '../commons/slider.dart';
 
 class BookPlayer extends StatefulWidget {
   // final int index;
@@ -28,7 +28,9 @@ class _BookPlayerState extends State<BookPlayer> {
     initBooks(index);
   }
 
+// index is # of book selected
   initBooks(index) async {
+    //check if Shared prefs available
     final data = Provider.of<DataProvider>(context, listen: false);
     final session = await AudioSession.instance;
     _playList = ConcatenatingAudioSource(children: data.playLists[index]);
@@ -56,112 +58,167 @@ class _BookPlayerState extends State<BookPlayer> {
         actions: [
           TextButton(
               onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                final myStr = prefs.getStringList('positionIndex') ?? [];
-                print('One: ${myStr[0]}-- Two: ${myStr[1]}');
+                print(_audioPlayer.sequence?[0].tag.title);
+                // SharedPreferences prefs = await SharedPreferences.getInstance();
+                // final myStr = prefs.getStringList('positionIndex') ?? [];
+                // if (myStr.isEmpty) {
+                //   print('empty');
+                // } else {
+                //   print('data');
+                // }
+                // print('One: ${myStr[0]}-- Two: ${myStr[1]}');
+                // Duration lastPosition = data.parseDuration(myStr[0]);
+                // int lastSequence = int.parse(myStr[1]);
+                // _audioPlayer.seek(lastPosition, index: lastSequence);
               },
               child: Text('Get')),
-          TextButton.icon(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.black)),
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.setStringList('positionIndex', [
-                  _audioPlayer.position.toString(),
-                  _audioPlayer.currentIndex.toString()
-                ]);
-              },
-              icon: Icon(Icons.book),
-              label: Text('ChangeBook'))
+          // TextButton.icon(
+          //     style: ButtonStyle(
+          //         backgroundColor: MaterialStateProperty.all(Colors.black)),
+          //     onPressed: () async {
+          //       SharedPreferences prefs = await SharedPreferences.getInstance();
+          //       prefs.clear();
+          //       // prefs.setStringList('positionIndex', [
+          //       //   _audioPlayer.position.toString(),
+          //       //   _audioPlayer.currentIndex.toString()
+          //       // ]);
+          //     },
+          //     icon: Icon(Icons.book),
+          //     label: Text('ChangeBook'))
         ],
       ),
-      body: Center(
-        child: !ready
-            ? CircularProgressIndicator()
-            : Column(
-                children: [
-                  Row(children: [
-                    Text(
-                      data.namesOfBooks[0].toString(),
-                    ),
-                  ]),
-                  StreamBuilder<SequenceState?>(
-                      stream: _audioPlayer.sequenceStateStream,
-                      builder: (_, snapshot) {
-                        final book = snapshot.data;
-
-                        return book != null
-                            ? Column(children: [
-                                Container(
-                                  margin: EdgeInsets.symmetric(vertical: 20),
-                                  height: 200,
-                                  child: Image(
-                                    image: AssetImage(
-                                        book.sequence[0].tag.artwork),
-                                  ),
-                                ),
-                                Text(book.sequence[0].tag.album,
-                                    style: TextStyle(fontSize: 20)),
-                                Text(
-                                    '${book.sequence[book.currentIndex].tag.title}--${book.currentIndex}')
-                              ])
-                            : Text('');
-                      }),
-                  PlayerButtons(_audioPlayer, false),
-                  SliderBar(_audioPlayer),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                            'Episodes',
-                            style: TextStyle(fontSize: 22),
-                          ),
-                        ),
-                        Expanded(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/grey.png'), fit: BoxFit.cover),
+        ),
+        child: Center(
+          child: !ready
+              ? CircularProgressIndicator()
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      child: Row(children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 20),
+                          height: 80.0,
+                          width: MediaQuery.of(context).size.width,
                           child: ListView.builder(
-                            itemCount: _playList.length,
-                            itemBuilder: (BuildContext ctx, int index) {
-                              return Card(
-                                margin: EdgeInsets.fromLTRB(16, 2, 16, 0),
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        _playList.sequence[0].tag.artwork),
-                                  ),
-                                  title:
-                                      Text(_playList.sequence[index].tag.title),
-                                  trailing: IconButton(
-                                    onPressed: () async {
-                                      await _audioPlayer.stop();
-                                      _audioPlayer.seek(Duration(seconds: 0),
-                                          index: index);
-
-                                      setState(() {});
-                                    },
-                                    icon: Icon(Icons.play_arrow),
-                                  ),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: data.figFile.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  initBooks(index);
+                                },
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 4),
+                                  child: Image(
+                                      image: AssetImage(data.figFile[index])),
                                 ),
                               );
                             },
                           ),
                         ),
-                        SizedBox(height: 26)
-                      ],
+                      ]),
                     ),
-                  )
-                ],
-              ),
+                    Divider(
+                      thickness: 3,
+                      indent: 40,
+                      endIndent: 40,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      child: StreamBuilder<SequenceState?>(
+                          stream: _audioPlayer.sequenceStateStream,
+                          builder: (_, snapshot) {
+                            final book = snapshot.data;
+
+                            return book != null
+                                ? Column(children: [
+                                    Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 20),
+                                      height: 120,
+                                      child: Image(
+                                        image: AssetImage(
+                                            book.sequence[0].tag.artwork),
+                                      ),
+                                    ),
+                                    Text(book.sequence[0].tag.album,
+                                        style: TextStyle(fontSize: 20)),
+                                    Text(book
+                                        .sequence[book.currentIndex].tag.title)
+                                  ])
+                                : Text('');
+                          }),
+                    ),
+                    PlayerButtons(_audioPlayer, false),
+                    SliderBar(_audioPlayer),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              'Episodes',
+                              style: TextStyle(fontSize: 22),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: _playList.length,
+                              itemBuilder: (BuildContext ctx, int index) {
+                                return Card(
+                                  margin: EdgeInsets.fromLTRB(16, 2, 16, 0),
+                                  child: ListTile(
+                                    leading: ConstrainedBox(
+                                      constraints:
+                                          BoxConstraints(maxHeight: 32),
+                                      child: Image(
+                                          image: AssetImage(_playList
+                                              .sequence[0].tag.artwork)),
+                                    ),
+                                    // leading: CircleAvatar(
+                                    //   backgroundImage: AssetImage(
+                                    //       _playList.sequence[0].tag.artwork),
+                                    // ),
+                                    title: Text(
+                                        _playList.sequence[index].tag.title),
+                                    trailing: IconButton(
+                                      onPressed: () async {
+                                        await _audioPlayer.stop();
+                                        _audioPlayer.seek(Duration(seconds: 0),
+                                            index: index);
+
+                                        setState(() {});
+                                      },
+                                      icon: Icon(Icons.play_arrow),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 26)
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey[600],
         onPressed: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setStringList('positionIndex', [
+            //_audioPlayer.sequence.toString(),
             _audioPlayer.position.toString(),
             _audioPlayer.currentIndex.toString()
           ]);
