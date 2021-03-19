@@ -5,7 +5,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../commons/player_buttons.dart';
-//import 'helpers/meta.dart';
 import '../helpers/data_provider.dart';
 import '../commons/slider.dart';
 
@@ -31,12 +30,14 @@ class _BookPlayerState extends State<BookPlayer> {
 // index is # of book selected
   initBooks(index) async {
     //check if Shared prefs available
+
     final data = Provider.of<DataProvider>(context, listen: false);
     final session = await AudioSession.instance;
     _playList = ConcatenatingAudioSource(children: data.playLists[index]);
 
     await session.configure(AudioSessionConfiguration.speech());
     await _audioPlayer.setAudioSource(_playList);
+    await data.checkfRefs(_audioPlayer);
     ready = true;
     setState(() {});
   }
@@ -57,34 +58,17 @@ class _BookPlayerState extends State<BookPlayer> {
         title: Text('AudioBooks'),
         actions: [
           TextButton(
-              onPressed: () async {
-                print(_audioPlayer.sequence?[0].tag.title);
-                // SharedPreferences prefs = await SharedPreferences.getInstance();
-                // final myStr = prefs.getStringList('positionIndex') ?? [];
-                // if (myStr.isEmpty) {
-                //   print('empty');
-                // } else {
-                //   print('data');
-                // }
-                // print('One: ${myStr[0]}-- Two: ${myStr[1]}');
-                // Duration lastPosition = data.parseDuration(myStr[0]);
-                // int lastSequence = int.parse(myStr[1]);
-                // _audioPlayer.seek(lastPosition, index: lastSequence);
-              },
-              child: Text('Get')),
-          // TextButton.icon(
-          //     style: ButtonStyle(
-          //         backgroundColor: MaterialStateProperty.all(Colors.black)),
-          //     onPressed: () async {
-          //       SharedPreferences prefs = await SharedPreferences.getInstance();
-          //       prefs.clear();
-          //       // prefs.setStringList('positionIndex', [
-          //       //   _audioPlayer.position.toString(),
-          //       //   _audioPlayer.currentIndex.toString()
-          //       // ]);
-          //     },
-          //     icon: Icon(Icons.book),
-          //     label: Text('ChangeBook'))
+            child: Text('Set'),
+            style: TextButton.styleFrom(primary: Colors.black),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setStringList('positionIndex', [
+                _audioPlayer.sequence?[0].tag.album,
+                _audioPlayer.position.toString(),
+                _audioPlayer.currentIndex.toString()
+              ]);
+            },
+          )
         ],
       ),
       body: Container(
@@ -218,7 +202,7 @@ class _BookPlayerState extends State<BookPlayer> {
         onPressed: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setStringList('positionIndex', [
-            //_audioPlayer.sequence.toString(),
+            _audioPlayer.sequence?[0].tag.album,
             _audioPlayer.position.toString(),
             _audioPlayer.currentIndex.toString()
           ]);

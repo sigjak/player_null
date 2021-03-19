@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/meta.dart';
 import '../models/station.dart';
@@ -16,7 +17,10 @@ class DataProvider with ChangeNotifier {
   List<Station> stations = [
     Station(
         name: 'BBC World Service',
-        source: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
+        // BBC is a Dash audio
+        source:
+            'https://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/dash/nonuk/dash_low/aks/bbc_world_service.mpd',
+        //source: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
         logo: 'assets/images/bbc.png'),
     Station(
         name: 'WNYC 93.9',
@@ -99,5 +103,22 @@ class DataProvider with ChangeNotifier {
     }
     micros = (double.parse(parts[parts.length - 1]) * 1000000).round();
     return Duration(hours: hours, minutes: minutes, microseconds: micros);
+  }
+
+  checkfRefs(_audioPlayer) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefList = prefs.getStringList('positionIndex') ?? [];
+    if (prefList.isEmpty) {
+      print('empty');
+      return;
+    } else {
+      String book = prefList[0];
+
+      Duration lastPosition = parseDuration(prefList[1]) - Duration(seconds: 5);
+      int lastSequence = int.parse(prefList[2]);
+      if (book == _audioPlayer.sequence?[0].tag.album) {
+        _audioPlayer.seek(lastPosition, index: lastSequence);
+      }
+    }
   }
 }

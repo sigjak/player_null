@@ -16,7 +16,7 @@ class Player extends StatefulWidget {
 
 class _PlayerState extends State<Player> {
   late AudioPlayer _audioPlayer;
-  int index = 1;
+  int index = 0;
 
   @override
   void initState() {
@@ -28,15 +28,26 @@ class _PlayerState extends State<Player> {
   initRadio(index) async {
     final data = Provider.of<DataProvider>(context, listen: false);
     final session = await AudioSession.instance;
+    final AudioSource radio;
     // final _playList = ConcatenatingAudioSource(children: data.playlist);
+    if (index == 0) {
+      radio = DashAudioSource(
+        Uri.parse(data.stations[index].source),
+        tag: AudioMetadata(
+            album: data.stations[index].name,
+            title: data.stations[index].name,
+            artwork: data.stations[index].logo),
+      );
+    } else {
+      radio = AudioSource.uri(
+        Uri.parse(data.stations[index].source),
+        tag: AudioMetadata(
+            album: data.stations[index].name,
+            title: data.stations[index].name,
+            artwork: data.stations[index].logo),
+      );
+    }
 
-    AudioSource radio = AudioSource.uri(
-      Uri.parse(data.stations[index].source),
-      tag: AudioMetadata(
-          album: data.stations[index].name,
-          title: data.stations[index].name,
-          artwork: data.stations[index].logo),
-    );
     await session.configure(AudioSessionConfiguration.speech());
     await _audioPlayer.setAudioSource(radio);
     setState(() {});

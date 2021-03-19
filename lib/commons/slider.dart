@@ -49,10 +49,10 @@ class _SliderBarState extends State<SliderBar> {
                         ],
                       ),
                       Positioned(
-                          top: 35,
+                          top: 30,
                           child: Text(position.toString().split(".").first)),
                       Positioned(
-                          top: 35,
+                          top: 30,
                           right: 0,
                           child: Text(duration.toString().split(".").first)),
                     ],

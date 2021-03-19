@@ -25,7 +25,9 @@ class _SelectingState extends State<Selecting> {
   Widget build(BuildContext context) {
     //final data = Provider.of<DataProvider>(context);
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text('Audioplayer'),
+        ),
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -40,24 +42,17 @@ class _SelectingState extends State<Selecting> {
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => Player()));
                     },
-                    child: Image.asset('assets/images/radio.png')),
+                    child: Image.asset('assets/images/bw_radio.png')),
               ),
               Container(
-                height: MediaQuery.of(context).size.height / 3,
+                height: MediaQuery.of(context).size.height / 4,
                 child: GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => BookPlayer()));
                     },
-                    child: Image.asset('assets/images/audioBook.png')),
+                    child: Image.asset('assets/images/audioBook2.png')),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => BookPlayer()),
-                    );
-                  },
-                  child: Text('Books'))
             ],
           ),
         ));
