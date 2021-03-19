@@ -17,7 +17,7 @@ class DataProvider with ChangeNotifier {
   List<Station> stations = [
     Station(
         name: 'BBC World Service',
-        // BBC is a Dash audio
+        // BBC is a Dash audio see radio
         source:
             'https://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/dash/nonuk/dash_low/aks/bbc_world_service.mpd',
         //source: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
